@@ -1,0 +1,10 @@
+node_modules/
+.DS_Store
+*.tgz
+
+# Personal planning docs — not for the public repo
+Cue_CLAUDE.md
+Cue_Context.docx
+
+# Local Claude Code permission settings (machine-specific)
+.claude/settings.local.json

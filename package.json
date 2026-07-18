@@ -1,0 +1,36 @@
+{
+  "name": "cue-cc",
+  "version": "0.1.0",
+  "description": "A Claude Code hook that watches your active session in real-time and nudges you when something is worth saying.",
+  "bin": {
+    "cue": "./cli/index.js",
+    "cue-hook": "./hook/index.js"
+  },
+  "files": [
+    "cli",
+    "hook",
+    "lib",
+    "config"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "claude-code",
+    "claude",
+    "hook",
+    "cli",
+    "token-usage",
+    "cost"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kaaustubh/cue-cc.git"
+  },
+  "homepage": "https://github.com/kaaustubh/cue-cc#readme",
+  "bugs": {
+    "url": "https://github.com/kaaustubh/cue-cc/issues"
+  },
+  "author": "Kaustubh",
+  "license": "MIT"
+}
