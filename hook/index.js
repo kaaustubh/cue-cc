@@ -5,7 +5,7 @@ const parser = require('../lib/parser');
 const signals = require('../lib/signals');
 const state = require('../lib/state');
 const formatter = require('../lib/formatter');
-const config = require('../config/defaults');
+const config = require('../config').load();
 
 function readStdin() {
   try {

@@ -11,8 +11,8 @@ first, it's the source of truth for signals/thresholds/output format.
 - `lib/` — parser.js, signals.js, state.js, formatter.js (all built)
 - `hook/index.js` — PostToolUse entry point (built)
 - `cli/index.js` — install / uninstall / status (built)
-- `config/defaults.js` — threshold defaults (built; no `~/.cue/config.json` override loading yet)
-- Still open: README with a real nudge screenshot, npm publish
+- `config/defaults.js` — threshold defaults; `config/index.js` — loads `~/.cue/config.json` overrides on top (both built)
+- Published: `cue-cc@0.1.0` on npm, repo live at https://github.com/kaaustubh/cue-cc (public)
 
 ## Run / build / test
 - `node -e "const p = require('./lib/parser'); console.log(p.parseSession('<path>'))"`
@@ -20,6 +20,9 @@ first, it's the source of truth for signals/thresholds/output format.
 - CLI testing: set `CUE_SETTINGS_PATH=<scratch-file>` before running `node cli/index.js install|uninstall|status` — never run install/uninstall against the real `~/.claude/settings.json` in a dev/test loop.
 
 ## Decisions
+- 2026-07-18: Config override loading lives in config/index.js (load()), separate from config/defaults.js (raw defaults) — hook/index.js calls require('../config').load() instead of requiring defaults directly. ~/.cue/config.json overrides are only accepted per-key if typeof matches the corresponding default's type; unknown keys and type-mismatched values are silently dropped rather than validated/rejected outright, since this is user-hand-edited input and a malformed single key shouldn't break the whole config.
+- 2026-07-18: cue-cc@0.1.0 published to npm 2026-07-18 and pushed to github.com/kaaustubh/cue-cc (public). `npm install -g cue-cc && cue install` is now the real install path anyone can use.
+- 2026-07-18: Cue's npm package restricts published contents to cli/, hook/, lib/, config/ via package.json "files" — Cue_CLAUDE.md, Cue_Context.docx (both chmod 600, personal), AGENTS.md, and CLAUDE.md stay out of the npm tarball even though AGENTS.md/CLAUDE.md are in the public git repo. Verified via a real npm pack -> npm install -g -> uninstall cycle (not just npm link) before pushing to GitHub.
 - 2026-07-16: Cumulative session cost ("Spent so far") is tracked in state.js (cumulative_cost_usd + last_processed_uuid), not recomputed from the parser's 8KB tail window each time — the parser can't see the whole session, only recent turns, so per-hook-call cost deltas are added to a running total, deduped by each turn's uuid (added to parser output) so overlapping tail-window reads never double-count the same turn. "Projected" cost is a naive linear extrapolation: (cumulative_cost / elapsed_minutes) * 60, capped once the session has already run past 60 min — a rough first-pass heuristic, not precise, matching the spec's "~$Y" approximation.
 - 2026-07-16: hook/index.js emits nudges as `{"systemMessage": "..."}` JSON on stdout (exit 0), not plain console.log text — verified against Claude Code's own hook docs that plain stdout on PostToolUse only reaches the debug log, never the user-visible transcript, unless the JSON systemMessage field is used.
 - 2026-07-16: signals.js Signal 2 (context compounding) tracks cache_read+cache_creation+input per turn, not the literal `input_tokens` field from the spec's pseudocode — real input_tokens sits at 1-4 tokens/turn regardless of context size, so it can't detect growth; total context size is what actually compounds and drives cost.
