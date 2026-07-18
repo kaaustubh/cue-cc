@@ -67,6 +67,24 @@ cue uninstall   # remove only Cue's hook entry; leaves ~/.cue/ intact
 cue status      # installed state + current session's tool-call count and cost
 ```
 
+## Troubleshooting
+
+**`cue: command not found` after `npm install -g cue-cc`.** This happens on
+some Homebrew-installed Node setups where npm's global prefix resolves inside
+Node's Cellar directory instead of `/usr/local/bin` — check with
+`npm config get prefix`. Either add that directory's `bin/` to your `PATH`,
+or point npm at a prefix that's already on it:
+
+```sh
+npm config set prefix ~/.npm-global
+# add ~/.npm-global/bin to your PATH, then reinstall
+npm install -g cue-cc
+```
+
+This only affects the `cue` command's convenience name — `cue install` writes
+an absolute path into the hook entry, so once installed, the hook itself
+fires correctly regardless of this issue.
+
 ## Scope
 
 Cue complements retrospective tools like ccusage — it's the real-time
